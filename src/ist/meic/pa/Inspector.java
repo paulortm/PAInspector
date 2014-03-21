@@ -9,8 +9,10 @@ import ist.meic.pa.commands.exception.CommandException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Inspector {
@@ -19,6 +21,9 @@ public class Inspector {
 	private InputStream in = System.in;
 	private PrintStream out = System.err;
 	private Scanner scanner = new Scanner(System.in);
+	
+	// Used to store the commands already executed. Avoids creating them again.
+	private Map<String,Command> executedCommands = new HashMap<String,Command>();
 	
 	private boolean keepInspecting = true;
 	
@@ -55,25 +60,31 @@ public class Inspector {
 	}
 	
 	private  void executeCommand(String commandName, List<String> cmdArgs) throws CommandNotFound, CommandException {
-		try {
-			java.lang.Class<? extends Command> c = (java.lang.Class<? extends Command>) java.lang.Class
-					.forName("ist.meic.pa.commands.Cmd_" + commandName).asSubclass(Command.class);
-			Command command = c.getConstructor().newInstance();
-			command.execute(this, cmdArgs);
-		} catch (ClassNotFoundException e) {
-			throw new CommandNotFound(commandName);
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalArgumentException e) {
-			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
-		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(e);
-		} catch (SecurityException e) {
-			throw new RuntimeException(e);
+		if(this.executedCommands.containsKey(commandName)) {
+			Command command = this.executedCommands.get(commandName);
+			command.execute(this,cmdArgs);
+		} else {
+			try {
+				java.lang.Class<? extends Command> c = (java.lang.Class<? extends Command>) java.lang.Class
+						.forName("ist.meic.pa.commands.Cmd_" + commandName).asSubclass(Command.class);
+				Command command = c.getConstructor().newInstance();
+				command.execute(this, cmdArgs);
+				this.executedCommands.put(commandName, command);
+			} catch (ClassNotFoundException e) {
+				throw new CommandNotFound(commandName);
+			} catch (InstantiationException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalArgumentException e) {
+				throw new RuntimeException(e);
+			} catch (InvocationTargetException e) {
+				throw new RuntimeException(e);
+			} catch (NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			} catch (SecurityException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 	
