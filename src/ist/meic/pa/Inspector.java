@@ -4,6 +4,7 @@ package ist.meic.pa;
 import ist.meic.pa.exception.CommandNotFound;
 import ist.meic.pa.graph.Graph;
 import ist.meic.pa.commands.Command;
+import ist.meic.pa.commands.exception.CommandException;
 
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -47,11 +48,13 @@ public class Inspector {
 				executeCommand(cmdName, cmdArguments);
 			} catch(CommandNotFound e) {
 				println("The command " + e.getCommandName() + " does not exist.");
+			} catch(CommandException e2) {
+				println(e2.toString());
 			}
 		}
 	}
 	
-	private  void executeCommand(String commandName, List<String> cmdArgs) throws CommandNotFound {
+	private  void executeCommand(String commandName, List<String> cmdArgs) throws CommandNotFound, CommandException {
 		try {
 			java.lang.Class<? extends Command> c = (java.lang.Class<? extends Command>) java.lang.Class
 					.forName("ist.meic.pa.commands.Cmd_" + commandName).asSubclass(Command.class);
