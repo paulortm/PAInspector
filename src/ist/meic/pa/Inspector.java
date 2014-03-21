@@ -58,7 +58,7 @@ public class Inspector {
 		try {
 			java.lang.Class<? extends Command> c = (java.lang.Class<? extends Command>) java.lang.Class
 					.forName("ist.meic.pa.commands.Cmd_" + commandName).asSubclass(Command.class);
-			Command command = c.getConstructor(Inspector.class, List.class).newInstance(this, cmdArgs);
+			Command command = c.getConstructor().newInstance();
 			command.execute(this, cmdArgs);
 		} catch (ClassNotFoundException e) {
 			throw new CommandNotFound(commandName);
