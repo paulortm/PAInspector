@@ -14,8 +14,8 @@ public class ModifyInt implements FieldModifier {
 	public void modify(Object obj, Field field, String value)
 			throws InvalidValueTypeException {
 		try {
-			int valueInt = Integer.parseInt(value);
-			field.setInt(obj, valueInt);
+			Integer valueInt = Integer.parseInt(value);
+			field.set(obj, valueInt);
 		} catch (NumberFormatException e) {
 			throw new InvalidValueTypeException("int");
 		} catch (IllegalArgumentException e) {

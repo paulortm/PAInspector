@@ -11,9 +11,11 @@ public class FieldModifierFactory {
 			return new ModifyInt();
 		} else if (fieldModifierType.equals("class java.lang.String")) {
 			return new ModifyString();
+		} else if (fieldModifierType.equals("boolean")
+				|| fieldModifierType.equals("class java.lang.Boolean")) {
+			return new ModifyBoolean();
 		} else {
 			throw new UnsupportedFieldTypeException();
 		}
 	}
-
 }
