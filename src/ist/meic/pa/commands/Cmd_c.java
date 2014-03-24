@@ -26,7 +26,7 @@ public class Cmd_c implements Command {
 		// get the methods of the currentObject
 		Object currentObject = insp.obtainCurrentObj();
 		Class objClass = currentObject.getClass();
-		Method[] objMethods = objClass.getDeclaredMethods();
+		Method[] objMethods = objClass.getMethods();
 
 		// get the methods whose name match the methodName
 		String methodName = args.get(0);
