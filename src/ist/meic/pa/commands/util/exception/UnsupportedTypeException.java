@@ -10,8 +10,7 @@ public class UnsupportedTypeException extends ParserException {
 		this.type = type;
 	}
 	
-	@Override
-	public String toString() {
+	public String getType() {
 		return this.type;
 	}
 }

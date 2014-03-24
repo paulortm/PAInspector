@@ -63,7 +63,7 @@ public class Inspector {
 				println("The command " + e.getCommandName()
 						+ " does not exist.");
 			} catch (CommandException e2) {
-				println(e2.toString());
+				println(e2.getMessage());
 			}
 		}
 	}
