@@ -51,8 +51,11 @@ public class Cmd_c implements Command {
 			parsedArgs[i - 1] = Integer.parseInt(args.get(i));
 		}
 
+		
+		Object result;
+		Method method = methodsThatMatchName.get(0);
 		try {
-			methodsThatMatchName.get(0).invoke(currentObject, parsedArgs);
+			result = method.invoke(currentObject, parsedArgs);
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
@@ -60,6 +63,8 @@ public class Cmd_c implements Command {
 		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
-
+		if(method.getReturnType() != void.class) {
+			insp.modifyCurrentObj(result);
+		}
 	}
 }
