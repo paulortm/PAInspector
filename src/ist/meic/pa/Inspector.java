@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.lang.reflect.Field;
 
 public class Inspector {
 
@@ -118,4 +119,23 @@ public class Inspector {
 		return this.scanner.nextLine();
 	}
 
+	public void printCurrentObj() {
+		Object obj = this.obtainCurrentObj();
+		Class<?> classe = obj.getClass();
+
+		this.println(obj.toString() + " " + classe.toString());
+
+		try {
+			for (Field f : classe.getDeclaredFields()) {
+				f.setAccessible(true);
+				this.println(f.getModifiers() + " " + f.getType() + " "
+						+ f.getName() + " = " + f.get(obj));
+			}
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
 }
