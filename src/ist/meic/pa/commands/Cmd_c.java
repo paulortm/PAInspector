@@ -7,6 +7,7 @@ import ist.meic.pa.commands.exception.MethodNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class Cmd_c implements Command {
@@ -43,5 +44,18 @@ public class Cmd_c implements Command {
 		}
 		
 		insp.println("The method " + methodName + " was found.");
+		
+		// parse the arguments assuming they are integer
+		Object[] parsedArgs = new Object[numberOfMethodArgs];
+		for(int i = 1; i < args.size(); i++) {
+			parsedArgs[i-1] = Integer.parseInt(args.get(i));
+		}
+		
+		try {
+			methodsThatMatchName.get(0).invoke(currentObject, parsedArgs);
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
