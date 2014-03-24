@@ -28,22 +28,36 @@ public class Cmd_m implements Command {
 			return false;
 	}
 
+	private void findSetField(Class<?> clazz, Object obj, String fieldName,
+			String newValue) throws IllegalArgumentException,
+			IllegalAccessException, ParserException, NoSuchFieldException {
+		try {
+			Field field = clazz.getDeclaredField(fieldName);
+			field.setAccessible(true);
+			ParserFactory parserFactory = new ParserFactory();
+			Parser parser = parserFactory.getParser(field.getType().toString());
+			field.set(obj, parser.parse(newValue));
+			field.setAccessible(false);
+		} catch (NoSuchFieldException e) {
+			if (clazz != Object.class)
+				this.findSetField(clazz.getSuperclass(), obj, fieldName,
+						newValue);
+			else
+				throw e;
+		}
+
+	}
+
 	@Override
 	public final void execute(Inspector insp, List<String> args)
 			throws CommandException {
 		if (this.checkArgs(args)) {
 			try {
-				ParserFactory parserFactory = new ParserFactory();
 				Object currentObj = insp.obtainCurrentObj();
-				Class<?> c = currentObj.getClass();
-				Field field = c.getField(args.get(0));
-				Parser parser = parserFactory.getParser(field.getType()
-						.toString());
-				field.set(currentObj, parser.parse(args.get(1)));
+				this.findSetField(currentObj.getClass(), currentObj,
+						args.get(0), args.get(1));
 			} catch (NoSuchFieldException e) {
 				throw new FieldNotFoundException(args.get(0));
-			} catch (SecurityException e) {
-				throw new RuntimeException(e.toString());
 			} catch (IllegalArgumentException e) {
 				throw new RuntimeException(e.toString());
 			} catch (IllegalAccessException e) {
