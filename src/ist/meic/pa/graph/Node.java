@@ -23,6 +23,10 @@ public class Node<T> {
 	protected Node<T> getRoot() {
 		return this.root;
 	}
+	
+	protected List<Node<T>> getChildrens() {
+		return this.childrens;
+	}
 
 	protected void addChildren(Node<T> node) {
 		this.childrens.add(node);
