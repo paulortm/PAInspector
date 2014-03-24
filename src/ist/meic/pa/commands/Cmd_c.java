@@ -19,10 +19,10 @@ public class Cmd_c implements Command {
 	@Override
 	public void execute(Inspector insp, List<String> args)
 			throws CommandException {
-		if(args.size() < 1) {
+		if (args.size() < 1) {
 			throw new InvalidArgumentsException("c <method_name> [<args>]");
 		}
-		
+
 		// get the methods of the currentObject
 		Object currentObject = insp.obtainCurrentObj();
 		Class objClass = currentObject.getClass();
@@ -42,20 +42,24 @@ public class Cmd_c implements Command {
 			throw new MethodNotFoundException(objClass.getName(), methodName,
 					numberOfMethodArgs);
 		}
-		
+
 		insp.println("The method " + methodName + " was found.");
-		
+
 		// parse the arguments assuming they are integer
 		Object[] parsedArgs = new Object[numberOfMethodArgs];
-		for(int i = 1; i < args.size(); i++) {
-			parsedArgs[i-1] = Integer.parseInt(args.get(i));
+		for (int i = 1; i < args.size(); i++) {
+			parsedArgs[i - 1] = Integer.parseInt(args.get(i));
 		}
-		
+
 		try {
 			methodsThatMatchName.get(0).invoke(currentObject, parsedArgs);
-		} catch (IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
+
 	}
 }

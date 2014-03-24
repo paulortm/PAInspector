@@ -12,9 +12,12 @@ public class ModifyString implements FieldModifier {
 	public void modify(Object obj, Field field, String value) {
 		try {
 			field.set(obj, value);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
+
 	}
 
 }

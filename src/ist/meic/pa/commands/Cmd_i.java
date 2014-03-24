@@ -1,7 +1,9 @@
 package ist.meic.pa.commands;
 
 import java.util.List;
+
 import ist.meic.pa.Inspector;
+
 import java.lang.reflect.Field;
 
 public class Cmd_i implements Command {
@@ -29,9 +31,12 @@ public class Cmd_i implements Command {
 			// adiciona o obj como recente
 			insp.modifyCurrentObj(ob);
 
-		} catch (NoSuchFieldException | SecurityException
-				| IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }
