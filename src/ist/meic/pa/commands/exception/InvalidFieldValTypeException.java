@@ -1,10 +1,10 @@
 package ist.meic.pa.commands.exception;
 
-public class InvalidValueTypeException extends CommandException {
+public class InvalidFieldValTypeException extends CommandException {
 
 	private static final long serialVersionUID = -2496038038522988276L;
 
-	public InvalidValueTypeException(String type) {
+	public InvalidFieldValTypeException(String type) {
 		super("The new value has to be of type " + type);
 	}
 	
