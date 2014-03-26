@@ -3,7 +3,7 @@ package ist.meic.pa.commands;
 import ist.meic.pa.Inspector;
 import ist.meic.pa.commands.exception.CommandException;
 import ist.meic.pa.commands.exception.InvalidArgumentsException;
-import ist.meic.pa.commands.exception.InvalidMethodArgTypes;
+import ist.meic.pa.commands.exception.InvalidMethodArgTypesException;
 import ist.meic.pa.commands.exception.MethodNotFoundException;
 import ist.meic.pa.commands.exception.UnsupportedMethodArgTypeException;
 import ist.meic.pa.commands.util.Parser;
@@ -73,7 +73,7 @@ public class Cmd_c implements Command {
 		} while(method == null && methodsIt.hasNext());
 		
 		if(method == null) {
-			throw new InvalidMethodArgTypes();
+			throw new InvalidMethodArgTypesException(methodsThatMatch);
 		}
 
 		try {
