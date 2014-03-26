@@ -37,9 +37,9 @@ public class Cmd_d implements Command {
 								+ obj.toString() + "of class"
 								+ obj.getClass().toString());
 					}
-					insp.println("Choose one option (type the number of the option):");
+					insp.print("Choose one option (type the number of the option):");
 					String opt = insp.scanLine();
-					insp.downInGraph(Integer.parseInt(opt));
+					insp.downInGraph(Integer.parseInt(opt) - 1);
 					insp.printCurrentObj();
 				} else {
 					throw new NoChildrenException();
