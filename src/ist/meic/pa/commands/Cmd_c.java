@@ -7,8 +7,10 @@ import ist.meic.pa.commands.exception.MethodNotFoundException;
 import ist.meic.pa.commands.exception.UnsupportedMethodArgTypeException;
 import ist.meic.pa.commands.util.Parser;
 import ist.meic.pa.commands.util.ParserFactory;
+import ist.meic.pa.commands.util.exception.ParserException;
 import ist.meic.pa.commands.util.exception.UnsupportedTypeException;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.lang.reflect.InvocationTargetException;
@@ -44,19 +46,30 @@ public class Cmd_c implements Command {
 		
 		// parse arguments of the method from the input
 		ParserFactory parserFactory = new ParserFactory();
-		List<Object> parsedArguments = new LinkedList<Object>();
+		Iterator<Method> methodsIt = methodsThatMatch.iterator();
+		List<Object> parsedArguments = null;
+		Class<?>[] argumentTypes;
+		Method m; // 
 		Method method = null;
 		Parser parser = null;
-		try {
-			for(Method m: methodsThatMatch) {
-				for(Class<?> c: m.getParameterTypes()) {
-					parser = parserFactory.getParser(c.getName());
-					
+		do {
+			// try to parse the arguments for each method until it cans
+			m = methodsIt.next();
+			try {
+				parsedArguments = new LinkedList<Object>();
+				argumentTypes = m.getParameterTypes();
+				for(int i = 0; i < args.size(); i++) {
+					parser = parserFactory.getParser(argumentTypes[i].getName());
+					parsedArguments.add(parser.parse(args.get(i)));
 				}
+				method = m;
+			} catch (UnsupportedTypeException e) {
+				throw new UnsupportedMethodArgTypeException(e.getType());
+			} catch (ParserException e) {
+				// An argument could not be parsed to the parameter type of the method
+				// Go to the next method 
 			}
-		} catch (UnsupportedTypeException e) {
-			throw new UnsupportedMethodArgTypeException(e.getType());
-		}
+		} while(method == null && methodsIt.hasNext());
 
 
 		Object result;
