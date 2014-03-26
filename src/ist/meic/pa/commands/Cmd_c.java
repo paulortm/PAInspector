@@ -8,6 +8,7 @@ import ist.meic.pa.commands.exception.MethodNotFoundException;
 import ist.meic.pa.commands.exception.UnsupportedMethodArgTypeException;
 import ist.meic.pa.commands.util.Parser;
 import ist.meic.pa.commands.util.ParserFactory;
+import ist.meic.pa.commands.util.ReflectionHelper;
 import ist.meic.pa.commands.util.exception.ParserException;
 import ist.meic.pa.commands.util.exception.UnsupportedTypeException;
 
@@ -37,8 +38,9 @@ public class Cmd_c implements Command {
 		// match the user input
 		String methodName = args.get(0);
 		int numberOfMethodArgs = args.size() - 1;
+		List<Method> allMethods = ReflectionHelper.getAllMethodsOf(objClass);
 		List<Method> methodsThatMatch = 
-				methodsThatMatchNameAndSize(objClass, methodName, numberOfMethodArgs); 
+				methodsThatMatchNameAndSize(allMethods, methodName, numberOfMethodArgs); 
 
 		if (methodsThatMatch.isEmpty()) {
 			throw new MethodNotFoundException(objClass.getName(), methodName,
@@ -53,8 +55,9 @@ public class Cmd_c implements Command {
 		Method m;
 		Method method = null;
 		Parser parser = null;
+		// Try to parse the arguments for each method.
+		// Stop if could parse all arguments of the method.
 		do {
-			// try to parse the arguments for each method until it cans
 			m = methodsIt.next();
 			try {
 				parsedArguments = new LinkedList<Object>();
@@ -77,7 +80,9 @@ public class Cmd_c implements Command {
 		}
 
 		try {
+			method.setAccessible(true);
 			Object result = method.invoke(currentObject, parsedArguments.toArray());
+			insp.println("called " + method.toString());
 			if(method.getReturnType() != void.class) {
 				insp.modifyCurrentObj(result);
 			}
@@ -91,9 +96,8 @@ public class Cmd_c implements Command {
 		}
 	}
 	
-	private List<Method> methodsThatMatchNameAndSize(Class<?> objClass, String methodName, int numberOfArgs){
+	private List<Method> methodsThatMatchNameAndSize(List<Method> objMethods, String methodName, int numberOfArgs){
 		List<Method> methodsThatMatch = new LinkedList<Method>();
-		Method[] objMethods = objClass.getMethods();
 		for (Method m : objMethods) {
 			if (m.getName().equals(methodName)
 					&& m.getParameterTypes().length == numberOfArgs)
@@ -101,4 +105,6 @@ public class Cmd_c implements Command {
 		}
 		return methodsThatMatch;
 	}
+	
+	
 }
