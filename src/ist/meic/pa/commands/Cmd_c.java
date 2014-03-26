@@ -3,6 +3,7 @@ package ist.meic.pa.commands;
 import ist.meic.pa.Inspector;
 import ist.meic.pa.commands.exception.CommandException;
 import ist.meic.pa.commands.exception.InvalidArgumentsException;
+import ist.meic.pa.commands.exception.InvalidMethodArgTypes;
 import ist.meic.pa.commands.exception.MethodNotFoundException;
 import ist.meic.pa.commands.exception.UnsupportedMethodArgTypeException;
 import ist.meic.pa.commands.util.Parser;
@@ -49,7 +50,7 @@ public class Cmd_c implements Command {
 		Iterator<Method> methodsIt = methodsThatMatch.iterator();
 		List<Object> parsedArguments = null;
 		Class<?>[] argumentTypes;
-		Method m; // 
+		Method m;
 		Method method = null;
 		Parser parser = null;
 		do {
@@ -58,32 +59,35 @@ public class Cmd_c implements Command {
 			try {
 				parsedArguments = new LinkedList<Object>();
 				argumentTypes = m.getParameterTypes();
-				for(int i = 0; i < args.size(); i++) {
+				for(int i = 0; i < args.size() - 1; i++) {
 					parser = parserFactory.getParser(argumentTypes[i].getName());
-					parsedArguments.add(parser.parse(args.get(i)));
+					parsedArguments.add(parser.parse(args.get(i+1)));
 				}
 				method = m;
 			} catch (UnsupportedTypeException e) {
 				throw new UnsupportedMethodArgTypeException(e.getType());
 			} catch (ParserException e) {
 				// An argument could not be parsed to the parameter type of the method
-				// Go to the next method 
+				// Go to the next method
 			}
 		} while(method == null && methodsIt.hasNext());
+		
+		if(method == null) {
+			throw new InvalidMethodArgTypes();
+		}
 
-
-		Object result;
 		try {
-			result = method.invoke(currentObject, parsedArguments.toArray());
+			Object result = method.invoke(currentObject, parsedArguments.toArray());
+			if(method.getReturnType() != void.class) {
+				insp.modifyCurrentObj(result);
+			}
+			insp.printCurrentObj();
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
-		}
-		if(method.getReturnType() != void.class) {
-			insp.modifyCurrentObj(result);
 		}
 	}
 	
