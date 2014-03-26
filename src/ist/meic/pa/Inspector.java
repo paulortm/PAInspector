@@ -8,7 +8,6 @@ import ist.meic.pa.graph.exception.RootReachedException;
 import ist.meic.pa.commands.Command;
 import ist.meic.pa.commands.exception.CommandException;
 
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -22,12 +21,15 @@ import java.lang.reflect.Field;
 public class Inspector {
 
 	private Graph<Object> graph;
-	private InputStream in = System.in;
 	private PrintStream out = System.err;
 	private Scanner scanner = new Scanner(System.in);
 
 	// Used to store the commands already executed. Avoids creating them again.
 	private Map<String, Command> executedCommands = new HashMap<String, Command>();
+
+	// Used to stored saved objects. Saved objects are associated with a name to
+	// be referenced later
+	private Map<String, Object> savedObjects = new HashMap<String, Object>();
 
 	private boolean keepInspecting = true;
 
@@ -168,5 +170,17 @@ public class Inspector {
 			throw new RuntimeException(e);
 		}
 
+	}
+
+	public void saveCurrentObject(String objectName) {
+		this.savedObjects.put(objectName, this.obtainCurrentObj());
+	}
+
+	public Object getSavedObject(String objectName) {
+		return this.savedObjects.get(objectName);
+	}
+
+	public void useSavedObject(String objectName) {
+		this.modifyCurrentObj(this.savedObjects.get(objectName));
 	}
 }
