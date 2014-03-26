@@ -13,6 +13,9 @@ public class ParserFactory {
 		} else if (parserType.equals("boolean")
 				|| parserType.equals("class java.lang.Boolean")) {
 			return new ParserBoolean();
+		} else if (parserType.equals("float")
+				|| parserType.equalsIgnoreCase("class java.lang.Float")) {
+			return new ParserFloat();
 		} else {
 			throw new UnsupportedTypeException(parserType);
 		}
