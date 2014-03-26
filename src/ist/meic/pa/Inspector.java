@@ -2,12 +2,15 @@ package ist.meic.pa;
 
 import ist.meic.pa.exception.CommandNotFound;
 import ist.meic.pa.graph.Graph;
+import ist.meic.pa.graph.exception.EmptyGraphException;
+import ist.meic.pa.graph.exception.RootReachedException;
 import ist.meic.pa.commands.Command;
 import ist.meic.pa.commands.exception.CommandException;
 
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +40,9 @@ public class Inspector {
 		String[] splitedLine;
 		String cmdName;
 		List<String> cmdArguments;
+
+		printCurrentObj();
+
 		while (keepInspecting()) {
 			print("> ");
 			splitedLine = scanLine().split(" ");
@@ -99,6 +105,10 @@ public class Inspector {
 		this.graph.add(obj);
 	}
 
+	public void upInGraph() throws EmptyGraphException, RootReachedException {
+		this.graph.up();
+	}
+
 	public boolean keepInspecting() {
 		return this.keepInspecting;
 	}
@@ -119,18 +129,28 @@ public class Inspector {
 		return this.scanner.nextLine();
 	}
 
+	private void printCurrentObjFields(Object obj, Class<?> clazz)
+			throws IllegalArgumentException, IllegalAccessException {
+		if (clazz != Object.class) {
+			this.printCurrentObjFields(obj, clazz.getSuperclass());
+			for (Field f : clazz.getDeclaredFields()) {
+				f.setAccessible(true);
+				this.println(Modifier.toString(f.getModifiers()) + " "
+						+ f.getType() + " " + f.getName() + " = " + f.get(obj));
+				f.setAccessible(false);
+			}
+		}
+	}
+
 	public void printCurrentObj() {
 		Object obj = this.obtainCurrentObj();
-		Class<?> classe = obj.getClass();
+		Class<?> clazz = obj.getClass();
 
-		this.println(obj.toString() + " " + classe.toString());
+		this.println(obj.toString() + " is an instance of " + clazz.toString());
+		this.println("----------------------------------");
 
 		try {
-			for (Field f : classe.getDeclaredFields()) {
-				f.setAccessible(true);
-				this.println(f.getModifiers() + " " + f.getType() + " "
-						+ f.getName() + " = " + f.get(obj));
-			}
+			this.printCurrentObjFields(obj, clazz);
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
