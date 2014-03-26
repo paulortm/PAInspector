@@ -51,7 +51,8 @@ public class Inspector {
 			// transform the arguments into a list
 			cmdArguments = new LinkedList<String>();
 			for (String str : splitedLine) {
-				cmdArguments.add(str);
+				if(!str.equals(""))
+					cmdArguments.add(str);
 			}
 			cmdArguments.remove(0);
 
