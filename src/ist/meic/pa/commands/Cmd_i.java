@@ -6,7 +6,6 @@ import java.lang.reflect.Field;
 import ist.meic.pa.commands.exception.CommandException;
 import ist.meic.pa.commands.exception.FieldNotFoundException;
 import ist.meic.pa.commands.exception.InvalidArgumentsException;
-import ist.meic.pa.commands.exception.UnsupportedFieldTypeException;
 
 
 public class Cmd_i implements Command {
@@ -31,10 +30,10 @@ public class Cmd_i implements Command {
 			Object obj = insp.obtainCurrentObj();
 
 			// pega a classe do objecto
-			Class<?> classe = obj.getClass();
+			Class<?> clazz = obj.getClass();
 			
 			// pega o atributo name do obj
-			Field field = classe.getDeclaredField(fieldName);
+			Field field = clazz.getDeclaredField(fieldName);
 
 			// adiciona o obj como recente
 			field.setAccessible(true);

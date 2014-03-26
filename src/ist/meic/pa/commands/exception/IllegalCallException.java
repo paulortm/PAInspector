@@ -1,10 +1,10 @@
 package ist.meic.pa.commands.exception;
 
-public class IllegalUpCallException extends CommandException {
+public class IllegalCallException extends CommandException {
 
 	private static final long serialVersionUID = -2640294283862897787L;
 
-	public IllegalUpCallException(String message) {
+	public IllegalCallException(String message) {
 		super(message);
 	}
 	

@@ -3,6 +3,7 @@ package ist.meic.pa;
 import ist.meic.pa.exception.CommandNotFound;
 import ist.meic.pa.graph.Graph;
 import ist.meic.pa.graph.exception.EmptyGraphException;
+import ist.meic.pa.graph.exception.InvalidChildException;
 import ist.meic.pa.graph.exception.RootReachedException;
 import ist.meic.pa.commands.Command;
 import ist.meic.pa.commands.exception.CommandException;
@@ -51,7 +52,7 @@ public class Inspector {
 			// transform the arguments into a list
 			cmdArguments = new LinkedList<String>();
 			for (String str : splitedLine) {
-				if(!str.equals(""))
+				if (!str.equals(""))
 					cmdArguments.add(str);
 			}
 			cmdArguments.remove(0);
@@ -108,6 +109,15 @@ public class Inspector {
 
 	public void upInGraph() throws EmptyGraphException, RootReachedException {
 		this.graph.up();
+	}
+
+	public List<Object> getDownInGraphOptions() throws EmptyGraphException {
+		return this.graph.getCurrentChildren();
+	}
+
+	public void downInGraph(Integer option) throws EmptyGraphException,
+			InvalidChildException {
+		this.graph.down(option);
 	}
 
 	public boolean keepInspecting() {

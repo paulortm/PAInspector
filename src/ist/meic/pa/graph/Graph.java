@@ -25,14 +25,18 @@ public class Graph<T> {
 		this.current = node;
 	}
 
-	public List<T> getCurrentChildren() {
-		ArrayList<T> children = new ArrayList<T>();
+	public List<T> getCurrentChildren() throws EmptyGraphException {
+		if (this.current == null) {
+			throw new EmptyGraphException();
+		} else {
+			ArrayList<T> children = new ArrayList<T>();
+			for (Node<T> node : this.current.getChildrens()) {
+				children.add(node.getObj());
+			}
 
-		for (Node<T> node : this.current.getChildrens()) {
-			children.add(node.getObj());
+			return children;
 		}
 
-		return children;
 	}
 
 	public void up() throws EmptyGraphException, RootReachedException {
