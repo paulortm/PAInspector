@@ -18,6 +18,8 @@ public class ParserFactory {
 			return new ParserFloat();
 		} else if (clazz.equals(Class.class)) {
 			return new ParserClass();
+		} else if (clazz.isArray()) {
+			return new ParserArray(clazz.getComponentType());
 		} else {
 			throw new UnsupportedTypeException(clazz.toString());
 		}

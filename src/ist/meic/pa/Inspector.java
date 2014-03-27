@@ -40,7 +40,7 @@ public class Inspector {
 
 	public void inspect(Object object) {
 		modifyCurrentObj(object);
-		String[] splitedLine;
+		List<String> splitedLine;
 		String cmdName;
 		List<String> cmdArguments;
 
@@ -48,16 +48,11 @@ public class Inspector {
 
 		while (keepInspecting()) {
 			print("> ");
-			splitedLine = scanLine().split(" ");
-			cmdName = splitedLine[0];
-
-			// transform the arguments into a list
-			cmdArguments = new LinkedList<String>();
-			for (String str : splitedLine) {
-				if (!str.equals(""))
-					cmdArguments.add(str);
-			}
-			cmdArguments.remove(0);
+			splitedLine = splitLine(scanLine());
+			
+			// separate command and arguments
+			cmdName = splitedLine.get(0);
+			cmdArguments = splitedLine.subList(1, splitedLine.size());
 
 			try {
 				executeCommand(cmdName, cmdArguments);
@@ -99,6 +94,38 @@ public class Inspector {
 				throw new RuntimeException(e);
 			}
 		}
+	}
+
+	// If a '[' is found split only on the next ']'.
+	// Otherwise splits when finds spaces. This way array elements
+	// belong to the same string
+	private List<String> splitLine(String line) {
+		List<String> splitedLine = new LinkedList<String>();
+		int begin = 0; // index were the actual element begins
+		char actualChar;
+		String element;
+		boolean readingArray = false;
+		int i;
+		for (i = 0; i < line.length(); i++) {
+			actualChar = line.charAt(i);
+			if (((actualChar == ' ' && begin != i && !readingArray) 
+			      || (actualChar == ']' && readingArray))) {
+				element = line.substring(begin, i);
+				splitedLine.add(element);
+				readingArray = false;
+				begin = i + 1;
+			} else if (actualChar == ' ' && !readingArray) {
+				begin++;
+			} else if (actualChar == '[' && !readingArray) {
+				readingArray = true;
+				begin++;
+			}
+		}
+		if(begin != i) {
+			element = line.substring(begin, i);
+			splitedLine.add(element);
+		}
+		return splitedLine;
 	}
 
 	public Object obtainCurrentObj() {
@@ -179,7 +206,7 @@ public class Inspector {
 	public Object getSavedObject(String objectName) {
 		return this.savedObjects.get(objectName);
 	}
-	
+
 	public boolean isObjectSaved(String objectName) {
 		return this.savedObjects.containsKey(objectName);
 	}
