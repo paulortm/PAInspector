@@ -23,7 +23,7 @@ public class Cmd_i implements Command {
 		return !(args.size() == 1);
 	}
 
-	private void findSetField(Class<?> clazz, Object obj, Inspector insp,
+	private void findField(Class<?> clazz, Object obj, Inspector insp,
 			String fieldName) throws IllegalArgumentException,
 			IllegalAccessException, ParserException, NoSuchFieldException,
 			CommandException {
@@ -36,7 +36,7 @@ public class Cmd_i implements Command {
 
 		} catch (NoSuchFieldException e) {
 			if (clazz != Object.class)
-				this.findSetField(clazz.getSuperclass(), obj, insp, fieldName);
+				this.findField(clazz.getSuperclass(), obj, insp, fieldName);
 			else
 				throw new InvalidArgumentsException("i <name_of_the_field>");
 		}
@@ -52,7 +52,7 @@ public class Cmd_i implements Command {
 		String fieldName = args.get(0);
 		try {
 			Object obj = insp.obtainCurrentObj();
-			this.findSetField(obj.getClass(), obj, insp, fieldName);
+			this.findField(obj.getClass(), obj, insp, fieldName);
 
 		} catch (NoSuchFieldException e) {
 			throw new FieldNotFoundException(fieldName);
