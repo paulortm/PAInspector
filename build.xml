@@ -16,7 +16,7 @@
     <target name="clean" 
         description="Delete build directory">
         <delete dir="${build.dir}" failonerror="false" deleteonexit="true" />
-        <delete file="Inspector.jar" failonerror="false" deleteonexit="true" />
+        <delete file="inspector.jar" failonerror="false" deleteonexit="true" />
     </target>
 
     <target name="compile" depends="init" 
@@ -28,7 +28,7 @@
 
     <target name="jar" depends="compile" 
         description="Creates Inspector.jar">
-        <jar destfile="Inspector.jar"
+        <jar destfile="inspector.jar"
             basedir="${build.classes.dir}">
         </jar>
     </target>
