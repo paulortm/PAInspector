@@ -32,14 +32,19 @@ public class Cmd_d implements Command {
 				List<Object> options = insp.getDownInGraphOptions();
 				Integer optNumber = 1;
 				if (options.size() > 0) {
-					for (Object obj : options) {
-						insp.println("Option " + optNumber++ + ":"
-								+ obj.toString() + "of class"
-								+ obj.getClass().toString());
+					if (options.size() > 1) {
+						for (Object obj : options) {
+							insp.println("Option " + optNumber++ + ":"
+									+ obj.toString() + "of class"
+									+ obj.getClass().toString());
+						}
+						insp.print("Choose one option (type the number of the option):");
+						String opt = insp.scanLine();
+						insp.downInGraph(Integer.parseInt(opt) - 1);
+					} else {
+						insp.downInGraph(0);
 					}
-					insp.print("Choose one option (type the number of the option):");
-					String opt = insp.scanLine();
-					insp.downInGraph(Integer.parseInt(opt) - 1);
+					insp.println("----------------------------------");
 					insp.printCurrentObj();
 				} else {
 					throw new NoChildrenException();

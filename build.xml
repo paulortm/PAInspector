@@ -1,0 +1,41 @@
+ <project name="PAInspector" default="build" basedir=".">
+
+    <!-- properties and paths -->
+    
+    <property name="src.dir" location="src" />
+    <property name="build.dir" location="build" />
+    <property name="build.classes.dir" location="${build.dir}/classes" />
+
+    <!-- targets -->
+
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build.classes.dir}"/>
+    </target>
+
+    <target name="clean" 
+        description="Delete build directory">
+        <delete dir="${build.dir}" failonerror="false" deleteonexit="true" />
+        <delete file="Inspector.jar" failonerror="false" deleteonexit="true" />
+    </target>
+
+    <target name="compile" depends="init" 
+        description="Compile program">
+        <javac srcdir="${src.dir}"
+            destdir="${build.classes.dir}">
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile" 
+        description="Creates Inspector.jar">
+        <jar destfile="Inspector.jar"
+            basedir="${build.classes.dir}">
+        </jar>
+    </target>
+
+    <target name="build" depends="jar" 
+        description="Build project" />
+
+    <target name="rebuild" depends="clean,build" />
+
+</project>

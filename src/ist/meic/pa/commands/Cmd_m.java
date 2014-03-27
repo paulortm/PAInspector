@@ -56,6 +56,7 @@ public class Cmd_m implements Command {
 				Object currentObj = insp.obtainCurrentObj();
 				this.findSetField(currentObj.getClass(), currentObj,
 						args.get(0), args.get(1));
+				insp.printCurrentObj();
 			} catch (NoSuchFieldException e) {
 				throw new FieldNotFoundException(args.get(0));
 			} catch (IllegalArgumentException e) {

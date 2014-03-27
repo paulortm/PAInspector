@@ -9,8 +9,6 @@ import java.lang.reflect.Field;
 import ist.meic.pa.commands.exception.CommandException;
 import ist.meic.pa.commands.exception.FieldNotFoundException;
 import ist.meic.pa.commands.exception.InvalidArgumentsException;
-import ist.meic.pa.commands.util.Parser;
-import ist.meic.pa.commands.util.ParserFactory;
 import ist.meic.pa.commands.util.exception.ParserException;
 
 public class Cmd_i implements Command {
