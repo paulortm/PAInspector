@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 import ist.meic.pa.commands.exception.CommandException;
 import ist.meic.pa.commands.exception.FieldNotFoundException;
 import ist.meic.pa.commands.exception.InvalidArgumentsException;
-import ist.meic.pa.commands.util.exception.ParserException;
+import ist.meic.pa.commands.util.ReflectionHelper;
 
 public class Cmd_i implements Command {
 
@@ -18,40 +18,25 @@ public class Cmd_i implements Command {
 	}
 
 	private boolean checkArgs(List<String> args) {
-		return !(args.size() == 1);
-	}
-
-	private void findField(Class<?> clazz, Object obj, Inspector insp,
-			String fieldName) throws IllegalArgumentException,
-			IllegalAccessException, ParserException, NoSuchFieldException,
-			CommandException {
-		try {
-			Field field = clazz.getDeclaredField(fieldName);
-			field.setAccessible(true);
-			insp.modifyCurrentObj(field.get(obj));
-			field.setAccessible(false);
-			insp.printCurrentObj();
-
-		} catch (NoSuchFieldException e) {
-			if (clazz != Object.class)
-				this.findField(clazz.getSuperclass(), obj, insp, fieldName);
-			else
-				throw new InvalidArgumentsException("i <name_of_the_field>");
-		}
+		return (args.size() == 1);
 	}
 
 	@Override
 	public void execute(Inspector insp, List<String> args)
 			throws CommandException {
-		if (this.checkArgs(args)) {
+		if (!this.checkArgs(args)) {
 			throw new InvalidArgumentsException("i <name_of_the_field>");
 		}
 
 		String fieldName = args.get(0);
 		try {
 			Object obj = insp.obtainCurrentObj();
-			this.findField(obj.getClass(), obj, insp, fieldName);
+			Field field = ReflectionHelper.findField(obj.getClass(), fieldName);
 
+			field.setAccessible(true);
+			insp.modifyCurrentObj(field.get(obj));
+
+			insp.printCurrentObj();
 		} catch (NoSuchFieldException e) {
 			throw new FieldNotFoundException(fieldName);
 		} catch (SecurityException e) {
@@ -59,8 +44,6 @@ public class Cmd_i implements Command {
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		} catch (ParserException e) {
 			throw new RuntimeException(e);
 		}
 	}
