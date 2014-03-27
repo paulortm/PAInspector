@@ -20,8 +20,7 @@ public class Cmd_s implements Command {
 			throw new InvalidArgumentsException("s <name_of_var>");
 		}
 		
-		
-		
+		insp.saveCurrentObject(args.get(0));
 	}
 
 }
