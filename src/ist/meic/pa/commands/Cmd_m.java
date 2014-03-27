@@ -35,7 +35,7 @@ public class Cmd_m implements Command {
 			Field field = clazz.getDeclaredField(fieldName);
 			field.setAccessible(true);
 			ParserFactory parserFactory = new ParserFactory();
-			Parser parser = parserFactory.getParser(field.getType().toString());
+			Parser parser = parserFactory.getParser(field.getType());
 			field.set(obj, parser.parse(newValue));
 			field.setAccessible(false);
 		} catch (NoSuchFieldException e) {
