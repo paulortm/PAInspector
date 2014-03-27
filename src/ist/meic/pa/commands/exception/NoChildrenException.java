@@ -7,10 +7,5 @@ public class NoChildrenException extends CommandException {
 	public NoChildrenException() {
 		super("The current node in the graph has no childrens.");
 	}
-	
-	@Override
-	public String toString() {
-		return this.getMessage();
-	}
 
 }

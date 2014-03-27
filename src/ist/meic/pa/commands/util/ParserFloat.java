@@ -1,16 +1,16 @@
 package ist.meic.pa.commands.util;
 
-import ist.meic.pa.commands.util.exception.InvalidValueTypeException;
+import ist.meic.pa.commands.util.exception.ParserInvalidValueTypeException;
 import ist.meic.pa.commands.util.exception.ParserException;
 
-public class ParserFloat implements Parser {
+public class ParserFloat extends Parser {
 
 	@Override
-	public Object parse(String value) throws ParserException {
+	protected Object dispatch(String value) throws ParserException {
 		try {
 			return Float.parseFloat(value);
-		} catch(NumberFormatException e) {
-			throw new InvalidValueTypeException("float");
+		} catch (NumberFormatException e) {
+			throw new ParserInvalidValueTypeException("float");
 		}
 	}
 

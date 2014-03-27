@@ -8,13 +8,15 @@ import ist.meic.pa.commands.exception.CommandException;
 import ist.meic.pa.commands.exception.FieldNotFoundException;
 import ist.meic.pa.commands.exception.InvalidArgumentsException;
 import ist.meic.pa.commands.exception.InvalidFieldValTypeException;
+import ist.meic.pa.commands.exception.SavedObjectNotFoundException;
 import ist.meic.pa.commands.exception.UnsupportedFieldTypeException;
 import ist.meic.pa.commands.util.Parser;
 import ist.meic.pa.commands.util.ParserFactory;
 import ist.meic.pa.commands.util.ReflectionHelper;
-import ist.meic.pa.commands.util.exception.InvalidValueTypeException;
+import ist.meic.pa.commands.util.exception.ParserInvalidValueTypeException;
 import ist.meic.pa.commands.util.exception.ParserException;
-import ist.meic.pa.commands.util.exception.UnsupportedTypeException;
+import ist.meic.pa.commands.util.exception.ParserSavedObjectNotFoundException;
+import ist.meic.pa.commands.util.exception.ParserUnsupportedTypeException;
 
 public class Cmd_m implements Command {
 
@@ -41,7 +43,8 @@ public class Cmd_m implements Command {
 				field.setAccessible(true);
 				ParserFactory parserFactory = new ParserFactory();
 				Parser parser = parserFactory.getParser(field.getType());
-				field.set(currentObj, parser.parse(args.get(1)));
+				field.set(currentObj,
+						parser.parse(insp.getSavedObjects(), args.get(1)));
 
 				insp.printCurrentObj();
 			} catch (NoSuchFieldException e) {
@@ -50,10 +53,12 @@ public class Cmd_m implements Command {
 				throw new RuntimeException(e.toString());
 			} catch (IllegalAccessException e) {
 				throw new RuntimeException(e.toString());
-			} catch (UnsupportedTypeException e) {
+			} catch (ParserUnsupportedTypeException e) {
 				throw new UnsupportedFieldTypeException();
-			} catch (InvalidValueTypeException e) {
+			} catch (ParserInvalidValueTypeException e) {
 				throw new InvalidFieldValTypeException(e.toString());
+			} catch (ParserSavedObjectNotFoundException e) {
+				throw new SavedObjectNotFoundException(e.toString());
 			} catch (ParserException e) {
 				throw new RuntimeException(e);
 			}
@@ -61,5 +66,4 @@ public class Cmd_m implements Command {
 			throw new InvalidArgumentsException("m <name_of_the_field> <value>");
 		}
 	}
-
 }

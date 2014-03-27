@@ -1,16 +1,16 @@
 package ist.meic.pa.commands.util;
 
-import ist.meic.pa.commands.util.exception.InvalidValueTypeException;
+import ist.meic.pa.commands.util.exception.ParserInvalidValueTypeException;
 import ist.meic.pa.commands.util.exception.ParserException;
 
-public class ParserClass implements Parser {
+public class ParserClass extends Parser {
 
 	@Override
-	public Object parse(String value) throws ParserException {
+	protected Object dispatch(String value) throws ParserException {
 		try {
 			return Class.forName(value);
 		} catch (ClassNotFoundException e) {
-			throw new InvalidValueTypeException("Class");
+			throw new ParserInvalidValueTypeException("Class");
 		}
 	}
 

@@ -1,10 +1,10 @@
 package ist.meic.pa.commands.util;
 
-import ist.meic.pa.commands.util.exception.UnsupportedTypeException;
+import ist.meic.pa.commands.util.exception.ParserUnsupportedTypeException;
 
 public class ParserFactory {
 
-	public Parser getParser(Class<?> clazz) throws UnsupportedTypeException {
+	public Parser getParser(Class<?> clazz) throws ParserUnsupportedTypeException {
 		if (clazz.equals(int.class)
 				|| clazz.equals(java.lang.Integer.class)) {
 			return new ParserInt();
@@ -21,7 +21,7 @@ public class ParserFactory {
 		} else if (clazz.isArray()) {
 			return new ParserArray(clazz.getComponentType());
 		} else {
-			throw new UnsupportedTypeException(clazz.toString());
+			throw new ParserUnsupportedTypeException(clazz.toString());
 		}
 	}
 }

@@ -7,10 +7,5 @@ public class InvalidFieldValTypeException extends CommandException {
 	public InvalidFieldValTypeException(String type) {
 		super("The new value has to be of type " + type);
 	}
-	
-	@Override
-	public String toString() {
-		return this.getMessage();
-	}
 
 }

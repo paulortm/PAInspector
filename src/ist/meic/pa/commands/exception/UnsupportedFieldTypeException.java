@@ -8,9 +8,4 @@ public class UnsupportedFieldTypeException extends CommandException {
 		super("The field you are trying to modify is of an unsupported type.");
 	}
 
-	@Override
-	public String toString() {
-		return this.getMessage();
-	}
-
 }

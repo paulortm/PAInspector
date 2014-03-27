@@ -8,9 +8,4 @@ public class InvalidOptionException extends CommandException {
 		super("Your option is not valid: " + msg);
 	}
 
-	@Override
-	public String toString() {
-		return this.getMessage();
-	}
-
 }

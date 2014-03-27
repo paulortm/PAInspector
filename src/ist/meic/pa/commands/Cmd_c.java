@@ -10,7 +10,7 @@ import ist.meic.pa.commands.util.Parser;
 import ist.meic.pa.commands.util.ParserFactory;
 import ist.meic.pa.commands.util.ReflectionHelper;
 import ist.meic.pa.commands.util.exception.ParserException;
-import ist.meic.pa.commands.util.exception.UnsupportedTypeException;
+import ist.meic.pa.commands.util.exception.ParserUnsupportedTypeException;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -34,19 +34,19 @@ public class Cmd_c implements Command {
 		Object currentObject = insp.obtainCurrentObj();
 		Class<?> objClass = currentObject.getClass();
 
-		// Get the methods whose name and number of arguments 
+		// Get the methods whose name and number of arguments
 		// match the user input
 		String methodName = args.get(0);
 		int numberOfMethodArgs = args.size() - 1;
 		List<Method> allMethods = ReflectionHelper.getAllMethodsOf(objClass);
-		List<Method> methodsThatMatch = 
-				methodsThatMatchNameAndSize(allMethods, methodName, numberOfMethodArgs); 
+		List<Method> methodsThatMatch = methodsThatMatchNameAndSize(allMethods,
+				methodName, numberOfMethodArgs);
 
 		if (methodsThatMatch.isEmpty()) {
 			throw new MethodNotFoundException(objClass.getName(), methodName,
 					numberOfMethodArgs);
 		}
-		
+
 		// parse arguments of the method from the input
 		ParserFactory parserFactory = new ParserFactory();
 		Iterator<Method> methodsIt = methodsThatMatch.iterator();
@@ -62,28 +62,31 @@ public class Cmd_c implements Command {
 			try {
 				parsedArguments = new LinkedList<Object>();
 				argumentTypes = m.getParameterTypes();
-				for(int i = 0; i < args.size() - 1; i++) {
+				for (int i = 0; i < args.size() - 1; i++) {
 					parser = parserFactory.getParser(argumentTypes[i]);
-					parsedArguments.add(parser.parse(args.get(i+1)));
+					parsedArguments.add(parser.parse(insp.getSavedObjects(),
+							args.get(i + 1)));
 				}
 				method = m;
-			} catch (UnsupportedTypeException e) {
+			} catch (ParserUnsupportedTypeException e) {
 				throw new UnsupportedMethodArgTypeException(e.getType());
 			} catch (ParserException e) {
-				// An argument could not be parsed to the parameter type of the method
+				// An argument could not be parsed to the parameter type of the
+				// method
 				// Go to the next method
 			}
-		} while(method == null && methodsIt.hasNext());
-		
-		if(method == null) {
+		} while (method == null && methodsIt.hasNext());
+
+		if (method == null) {
 			throw new InvalidMethodArgTypesException(methodsThatMatch);
 		}
 
 		try {
 			method.setAccessible(true);
-			Object result = method.invoke(currentObject, parsedArguments.toArray());
+			Object result = method.invoke(currentObject,
+					parsedArguments.toArray());
 			insp.println("called " + method.toString());
-			if(method.getReturnType() != void.class) {
+			if (method.getReturnType() != void.class) {
 				insp.modifyCurrentObj(result);
 			}
 			insp.printCurrentObj();
@@ -95,8 +98,9 @@ public class Cmd_c implements Command {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	private List<Method> methodsThatMatchNameAndSize(List<Method> objMethods, String methodName, int numberOfArgs){
+
+	private List<Method> methodsThatMatchNameAndSize(List<Method> objMethods,
+			String methodName, int numberOfArgs) {
 		List<Method> methodsThatMatch = new LinkedList<Method>();
 		for (Method m : objMethods) {
 			if (m.getName().equals(methodName)
@@ -105,6 +109,5 @@ public class Cmd_c implements Command {
 		}
 		return methodsThatMatch;
 	}
-	
-	
+
 }

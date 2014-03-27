@@ -1,13 +1,9 @@
 package ist.meic.pa.commands.util;
 
-public class ParserString implements Parser {
-
-	protected ParserString() {
-		super();
-	}
+public class ParserString extends Parser {
 
 	@Override
-	public Object parse(String value) {
+	protected Object dispatch(String value) {
 		return value;
 	}
 

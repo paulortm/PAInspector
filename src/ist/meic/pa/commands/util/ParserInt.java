@@ -1,19 +1,15 @@
 package ist.meic.pa.commands.util;
 
-import ist.meic.pa.commands.util.exception.InvalidValueTypeException;
+import ist.meic.pa.commands.util.exception.ParserInvalidValueTypeException;
 
-public class ParserInt implements Parser {
-
-	protected ParserInt() {
-		super();
-	}
+public class ParserInt extends Parser {
 
 	@Override
-	public Object parse(String value) throws InvalidValueTypeException {
+	protected Object dispatch(String value) throws ParserInvalidValueTypeException {
 		try {
 			return Integer.parseInt(value);
 		} catch (NumberFormatException e) {
-			throw new InvalidValueTypeException("int");
+			throw new ParserInvalidValueTypeException("int");
 		}
 	}
 

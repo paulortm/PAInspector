@@ -7,10 +7,5 @@ public class IllegalCallException extends CommandException {
 	public IllegalCallException(String message) {
 		super(message);
 	}
-	
-	@Override
-	public String toString() {
-		return this.getMessage();
-	}
 
 }

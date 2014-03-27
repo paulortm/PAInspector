@@ -1,21 +1,17 @@
 package ist.meic.pa.commands.util;
 
-import ist.meic.pa.commands.util.exception.InvalidValueTypeException;
+import ist.meic.pa.commands.util.exception.ParserInvalidValueTypeException;
 
-public class ParserBoolean implements Parser {
-
-	protected ParserBoolean() {
-		super();
-	}
+public class ParserBoolean extends Parser {
 
 	@Override
-	public Object parse(String value) throws InvalidValueTypeException {
+	protected Object dispatch(String value) throws ParserInvalidValueTypeException {
 		if (value.equals("true")) {
 			return new Boolean(true);
 		} else if (value.equals("false")) {
 			return new Boolean(false);
 		} else {
-			throw new InvalidValueTypeException("boolean");
+			throw new ParserInvalidValueTypeException("boolean");
 		}
 	}
 

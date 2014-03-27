@@ -8,9 +8,4 @@ public class InvalidArgumentsException extends CommandException {
 		super("Invalid arguments. Usage: " + usage);
 	}
 
-	@Override
-	public String toString() {
-		return this.getMessage();
-	}
-
 }

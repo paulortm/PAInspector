@@ -8,9 +8,4 @@ public class FieldNotFoundException extends CommandException {
 		super("The field \"" + fieldName + "\" was not found.");
 	}
 
-	@Override
-	public String toString() {
-		return this.getMessage();
-	}
-
 }

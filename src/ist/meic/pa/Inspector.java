@@ -49,7 +49,7 @@ public class Inspector {
 		while (keepInspecting()) {
 			print("> ");
 			splitedLine = splitLine(scanLine());
-			
+
 			// separate command and arguments
 			cmdName = splitedLine.get(0);
 			cmdArguments = splitedLine.subList(1, splitedLine.size());
@@ -108,8 +108,7 @@ public class Inspector {
 		int i;
 		for (i = 0; i < line.length(); i++) {
 			actualChar = line.charAt(i);
-			if (((actualChar == ' ' && begin != i && !readingArray) 
-			      || (actualChar == ']' && readingArray))) {
+			if (((actualChar == ' ' && begin != i && !readingArray) || (actualChar == ']' && readingArray))) {
 				element = line.substring(begin, i);
 				splitedLine.add(element);
 				readingArray = false;
@@ -121,7 +120,7 @@ public class Inspector {
 				begin++;
 			}
 		}
-		if(begin != i) {
+		if (begin != i) {
 			element = line.substring(begin, i);
 			splitedLine.add(element);
 		}
@@ -205,6 +204,10 @@ public class Inspector {
 
 	public Object getSavedObject(String objectName) {
 		return this.savedObjects.get(objectName);
+	}
+
+	public Map<String, Object> getSavedObjects() {
+		return this.savedObjects;
 	}
 
 	public boolean isObjectSaved(String objectName) {
