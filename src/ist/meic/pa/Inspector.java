@@ -179,8 +179,8 @@ public class Inspector {
 	public Object getSavedObject(String objectName) {
 		return this.savedObjects.get(objectName);
 	}
-
-	public void useSavedObject(String objectName) {
-		this.modifyCurrentObj(this.savedObjects.get(objectName));
+	
+	public boolean isObjectSaved(String objectName) {
+		return this.savedObjects.containsKey(objectName);
 	}
 }
