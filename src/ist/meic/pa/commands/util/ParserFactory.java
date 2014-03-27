@@ -16,6 +16,8 @@ public class ParserFactory {
 		} else if (clazz.equals(float.class)
 				|| clazz.equals(java.lang.Float.class)) {
 			return new ParserFloat();
+		} else if (clazz.equals(Class.class)) {
+			return new ParserClass();
 		} else {
 			throw new UnsupportedTypeException(clazz.toString());
 		}
