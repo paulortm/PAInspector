@@ -63,7 +63,7 @@ public class Cmd_c implements Command {
 				parsedArguments = new LinkedList<Object>();
 				argumentTypes = m.getParameterTypes();
 				for(int i = 0; i < args.size() - 1; i++) {
-					parser = parserFactory.getParser(argumentTypes[i].getName());
+					parser = parserFactory.getParser(argumentTypes[i]);
 					parsedArguments.add(parser.parse(args.get(i+1)));
 				}
 				method = m;

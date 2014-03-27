@@ -4,20 +4,22 @@ import ist.meic.pa.commands.util.exception.UnsupportedTypeException;
 
 public class ParserFactory {
 
-	public Parser getParser(String parserType) throws UnsupportedTypeException {
-		if (parserType.equals("int")
-				|| parserType.equals("class java.lang.Integer")) {
+	public Parser getParser(Class<?> clazz) throws UnsupportedTypeException {
+		if (clazz.equals(int.class)
+				|| clazz.equals(java.lang.Integer.class)) {
 			return new ParserInt();
-		} else if (parserType.equals("class java.lang.String")) {
+		} else if (clazz.equals(java.lang.String.class)) {
 			return new ParserString();
-		} else if (parserType.equals("boolean")
-				|| parserType.equals("class java.lang.Boolean")) {
+		} else if (clazz.equals(boolean.class)
+				|| clazz.equals(java.lang.Boolean.class)) {
 			return new ParserBoolean();
-		} else if (parserType.equals("float")
-				|| parserType.equalsIgnoreCase("class java.lang.Float")) {
+		} else if (clazz.equals(float.class)
+				|| clazz.equals(java.lang.Float.class)) {
 			return new ParserFloat();
+		} else if (clazz.equals(Class.class)) {
+			return new ParserClass();
 		} else {
-			throw new UnsupportedTypeException(parserType);
+			throw new UnsupportedTypeException(clazz.toString());
 		}
 	}
 }
