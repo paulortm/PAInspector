@@ -5,11 +5,14 @@ import ist.meic.pa.commands.exception.CommandException;
 import ist.meic.pa.commands.exception.InvalidArgumentsException;
 import ist.meic.pa.commands.exception.InvalidMethodArgTypesException;
 import ist.meic.pa.commands.exception.MethodNotFoundException;
+import ist.meic.pa.commands.exception.SavedObjectNotFoundException;
 import ist.meic.pa.commands.exception.UnsupportedMethodArgTypeException;
 import ist.meic.pa.commands.util.Parser;
 import ist.meic.pa.commands.util.ParserFactory;
 import ist.meic.pa.commands.util.ReflectionHelper;
 import ist.meic.pa.commands.util.exception.ParserException;
+import ist.meic.pa.commands.util.exception.ParserInvalidValueTypeException;
+import ist.meic.pa.commands.util.exception.ParserSavedObjectNotFoundException;
 import ist.meic.pa.commands.util.exception.ParserUnsupportedTypeException;
 
 import java.util.Iterator;
@@ -56,7 +59,7 @@ public class Cmd_c implements Command {
 		Method method = null;
 		Parser parser = null;
 		// Try to parse the arguments for each method.
-		// Stop if could parse all arguments of the method.
+		// Stop if could parse all arguments of a method.
 		do {
 			m = methodsIt.next();
 			try {
@@ -70,10 +73,14 @@ public class Cmd_c implements Command {
 				method = m;
 			} catch (ParserUnsupportedTypeException e) {
 				throw new UnsupportedMethodArgTypeException(e.getType());
-			} catch (ParserException e) {
+			} catch (ParserSavedObjectNotFoundException e) {
+				throw new SavedObjectNotFoundException(e.toString());
+			} catch (ParserInvalidValueTypeException e) {
 				// An argument could not be parsed to the parameter type of the
-				// method
+				// method.
 				// Go to the next method
+			} catch (ParserException e) {
+				throw new RuntimeException(e);
 			}
 		} while (method == null && methodsIt.hasNext());
 

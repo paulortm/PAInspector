@@ -18,7 +18,7 @@ import ist.meic.pa.commands.util.exception.ParserException;
 import ist.meic.pa.commands.util.exception.ParserSavedObjectNotFoundException;
 import ist.meic.pa.commands.util.exception.ParserUnsupportedTypeException;
 
-public class Cmd_m implements Command {
+public class Cmd_m extends FieldCommand {
 
 	public Cmd_m() {
 		super();
@@ -37,7 +37,7 @@ public class Cmd_m implements Command {
 		if (this.checkArgs(args)) {
 			try {
 				Object currentObj = insp.obtainCurrentObj();
-				Field field = ReflectionHelper.findField(currentObj.getClass(),
+				Field field = this.findField(insp, currentObj.getClass(),
 						args.get(0));
 
 				field.setAccessible(true);
@@ -47,8 +47,6 @@ public class Cmd_m implements Command {
 						parser.parse(insp.getSavedObjects(), args.get(1)));
 
 				insp.printCurrentObj();
-			} catch (NoSuchFieldException e) {
-				throw new FieldNotFoundException(args.get(0));
 			} catch (IllegalArgumentException e) {
 				throw new RuntimeException(e.toString());
 			} catch (IllegalAccessException e) {
