@@ -1,4 +1,4 @@
- <project name="PAInspector" default="build" basedir=".">
+<project name="PAInspector" default="build" basedir=".">
 
     <!-- properties and paths -->
     

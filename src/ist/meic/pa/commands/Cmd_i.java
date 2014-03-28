@@ -1,23 +1,14 @@
 package ist.meic.pa.commands;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import ist.meic.pa.Inspector;
 
 import java.lang.reflect.Field;
 
-
-
-
-import java.lang.reflect.Modifier;
-
 import ist.meic.pa.commands.exception.CommandException;
-import ist.meic.pa.commands.exception.FieldNotFoundException;
 import ist.meic.pa.commands.exception.InvalidArgumentsException;
-import ist.meic.pa.commands.exception.InvalidOptionException;
-import ist.meic.pa.commands.util.ReflectionHelper;
+import ist.meic.pa.commands.exception.NullObjectException;
 
 public class Cmd_i extends FieldCommand {
 
@@ -41,7 +32,10 @@ public class Cmd_i extends FieldCommand {
 			Object obj = insp.obtainCurrentObj();
 			Field field = findField(insp, obj.getClass(), fieldName);
 			field.setAccessible(true);
-			insp.modifyCurrentObj(field.get(obj));
+			Object newObj = field.get(obj);
+			if (newObj == null)
+				throw new NullObjectException();
+			insp.modifyCurrentObj(newObj);
 
 			insp.printCurrentObj();
 		} catch (SecurityException e) {
